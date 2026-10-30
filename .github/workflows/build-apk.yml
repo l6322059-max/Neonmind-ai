@@ -28,7 +28,7 @@ jobs:
           sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' android/app/src/main/AndroidManifest.xml
           sed -i 's|android:label="[^"]*"|android:label="NeonMind"|' android/app/src/main/AndroidManifest.xml
           for f in android/app/build.gradle android/app/build.gradle.kts; do
-            [ -f "$f" ] && sed -i -E 's/compileSdk(Version)?[ =]+[^ ]+/compileSdk = 36/; s/minSdk(Version)?[ =]+[^ ]+/minSdk = 23/' "$f"
+            [ -f "$f" ] && sed -i -E 's/compileSdk(Version)?[ =]+[^ ]+/compileSdk = 36/; s/minSdk(Version)?[ =]+[^ ]+/minSdk = 29/' "$f"
           done
           grep -nE "compileSdk|minSdk" android/app/build.gradle* || true
 
