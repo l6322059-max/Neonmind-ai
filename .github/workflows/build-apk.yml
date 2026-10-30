@@ -31,7 +31,33 @@ jobs:
           for f in android/app/build.gradle android/app/build.gradle.kts; do
             [ -f "$f" ] && sed -i -E 's/compileSdk(Version)?[ =]+[^ ]+/compileSdk = 36/; s/minSdk(Version)?[ =]+[^ ]+/minSdk = 23/' "$f"
           done
-          grep -nE "compileSdk|minSdk" android/app/build.gradle* || true
+          if [ -f android/build.gradle.kts ]; then
+          cat > /tmp/fix.txt <<'KTS'
+          subprojects {
+              afterEvaluate {
+                  if (project.hasProperty("android")) {
+                      project.extensions.configure<com.android.build.gradle.BaseExtension>("android") {
+                          compileSdkVersion(36)
+                      }
+                  }
+              }
+          }
+          KTS
+          cat /tmp/fix.txt android/build.gradle.kts > /tmp/root.txt
+          mv /tmp/root.txt android/build.gradle.kts
+          elif [ -f android/build.gradle ]; then
+          cat > /tmp/fix.txt <<'GRV'
+          subprojects {
+              afterEvaluate { p ->
+                  if (p.hasProperty('android')) {
+                      p.android.compileSdkVersion 36
+                  }
+              }
+          }
+          GRV
+          cat /tmp/fix.txt android/build.gradle > /tmp/root.txt
+          mv /tmp/root.txt android/build.gradle
+          fi
 
       - run: flutter pub get
       - run: flutter build apk --release
