@@ -23,6 +23,7 @@ jobs:
 
       - name: Generate Android project
         run: |
+          rm -rf android
           flutter create --platforms=android --project-name neonmind --org com.neonmind .
           rm -rf test
           sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' android/app/src/main/AndroidManifest.xml
